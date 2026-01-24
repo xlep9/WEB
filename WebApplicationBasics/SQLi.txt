@@ -6,3 +6,4 @@ Test 2: https://shop.com/product.php?id=8 AND 1=1
 
 Test 3: https://shop.com/product.php?id=8 AND 1=2
 → Không hiển thị gì (blank page)
+✅ Kết luận: Có SQL Injection
