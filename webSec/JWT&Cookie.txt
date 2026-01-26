@@ -1,0 +1,36 @@
+Cookie DẪN ĐẾN Session!
+// COOKIE (trên máy bạn)
+"session_id=abc123"  // Chỉ là SỐ THẺ
+
+// SESSION (trên server)
+{
+  "abc123": {           // Số thẻ này dẫn đến...
+    "user_id": 5,
+    "username": "nam15",
+    "cart": ["pizza", "coke"],
+    "login_time": "14:30"
+  }
+}
+
+Session (Tra cứu):
+Người dùng: "Tôi có mã số abc123"
+Server: *Truy cập database* 
+        "Để xem... abc123... À! Đây là user 5!"
+→ CẦN TRA CỨU MỖI LẦN
+
+JWT có 3 phần: HEADER.PAYLOAD.SIGNATURE
+eyJhbGciOiJIUzI1NiIs...  // HEADER: Loại mã hóa
+eyJzdWIiOiIxMjM0NTY3OD...  // PAYLOAD: Thông tin bạn
+SflKxwRJSMeKKF2QT4fwpM...  // SIGNATURE: Con dấu/chữ ký, Tạo từ (HEADER + PAYLOAD + SECRET_KEY)
+
+JWT (Tự xác thực):
+Người dùng: "Đây là vé của tôi {tên: user5, hết hạn: 18h} + chữ ký"
+Server: *Kiểm tra chữ ký* "Chữ ký đúng!"
+         *Đọc trên vé* "À user5, còn 2 giờ nữa hết hạn"
+→ KHÔNG CẦN TRA CỨU vì sau khi nhận được JWT, server dùng thông tin của HEADER + PAYLOAD và SECRET_KEY mà server đang giữ và dùng thuật toán mã hóa để tính ra
+Signature sau đó so sánh với SIGNATURE nhận được của JWT
+
+tóm lại là:
+cookie -> session -> ok 
+JWT (HEADER + PAYLOAD + SIGNATURE) -> server tạo SIGNATURE bằng HEADER + PAYLOAD + SECRET_KEY + alg của nó
+-> so sánh -> ok
