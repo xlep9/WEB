@@ -71,8 +71,20 @@ wiener~sd3owh795lps65mpfso7
 Giant Pillow Thing
 administrator~2ptqk3jbmma3ogglyjp4
 carlos~sagxavnidrd2oawyo7mz
-ZZZZZZ Bed - Your New Home Office
-Cheshire Cat Grin
+
+
+Querying the database type and version
+Database          | type	Query
+Microsoft, MySQL	| SELECT @@version
+Oracle	          | SELECT * FROM v$version
+PostgreSQL	      | SELECT version()
+For example, use a UNION attack with the following input: ' UNION SELECT @@version--
+
+
+
+
+
+
 
 
 
