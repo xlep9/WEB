@@ -79,9 +79,7 @@ Microsoft, MySQL	| SELECT @@version
 Oracle	          | SELECT * FROM v$version
 PostgreSQL	      | SELECT version()
 For example, use a UNION attack with the following input: ' UNION SELECT @@version--
-
-
-
+!!!!!!!!!! đôi khi cần thêm khoảng trắng ở cuối (sau dấu --) có lẽ đối với csdl MySQL !!!!! 
 
 
 
