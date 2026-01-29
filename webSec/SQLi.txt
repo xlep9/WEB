@@ -75,7 +75,8 @@ carlos~sagxavnidrd2oawyo7mz
 
 Querying the database type and version
 Database          | type	Query
-Microsoft, MySQL	| SELECT @@version
+                  | SELECT sqlite_version()
+Microsoft, MySQL  | SELECT @@version
 Oracle	          | SELECT * FROM v$version
 PostgreSQL	      | SELECT version()
 For example, use a UNION attack with the following input: ' UNION SELECT @@version--
