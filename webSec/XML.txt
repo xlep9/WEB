@@ -1,0 +1,7 @@
+Parse XML là dịch ngôn ngữ XML, còn DOM là bản sao có thể chỉnh sửa của nội dung đã được dịch đó trong bộ nhớ máy tính!
+Chính vì parse XML không chỉ đơn thuần là đọc mà còn có thể thực hiện các hành động trong quá trình đó, nên mới tạo ra lỗ hổng XXE.
+Tại sao Parse XML lại có thể gây lỗ hổng?
+Parse XML không chỉ "đọc" mà còn có thể:
+Tải và xử lý dữ liệu từ bên ngoài
+Thực thi các chỉ thị đặc biệt
+Truy cập các tài nguyên hệ thống
